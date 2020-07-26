@@ -42,6 +42,5 @@ else we want to calculate the height of the left/right subtree
 BASE CASE: if they are more than 1 apart return false, else return true
 */
 
-
 // LINK: https://leetcode.com/problems/balanced-binary-tree/description/Given
 //

@@ -22,31 +22,31 @@ class TreeNode {
 }
 
 const computeSuccessor = (root, node) => {
-  if(!root) return null;
+  if (!root) return null;
   let found = false;
 
   const dfs = (curr) => {
-    if(!curr) return null;
+    if (!curr) return null;
 
     const left = dfs(curr.left);
-    if(left) return left;
-    if(found) {
+    if (left) return left;
+    if (found) {
       return curr.val;
     }
-    if(node === curr.val) {
+    if (node === curr.val) {
       found = true;
     }
     const right = dfs(curr.right);
-    if(right) return right;
-  }
-  return dfs(root)
-}
+    if (right) return right;
+  };
+  return dfs(root);
+};
 
-const tree = new TreeNode(1)
-tree.left = new TreeNode(2)
-tree.left.left = new TreeNode(4)
-tree.left.right = new TreeNode(3)
+const tree = new TreeNode(1);
+tree.left = new TreeNode(2);
+tree.left.left = new TreeNode(4);
+tree.left.right = new TreeNode(3);
 
 // LINK: https://kennyzhuang.gitbooks.io/leetcode-lock/content/285_inordersuccessor_in_bst.html
 
-computeSuccessor(tree, 3)
+computeSuccessor(tree, 3);

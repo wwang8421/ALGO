@@ -11,17 +11,17 @@ traverse thru left and right subtrees;
 */
 
 const hasPathSum = (root, sum) => {
-  if(!root) return false;
+  if (!root) return false;
 
   const helper = (curr, s) => {
-    if(!curr) return false
+    if (!curr) return false;
 
-    if(!curr.left && !curr.right && s === curr.val) return true;
+    if (!curr.left && !curr.right && s === curr.val) return true;
 
     return helper(curr.left, s - curr.val) || helper(curr.right, s - curr.val);
-  }
+  };
 
   return helper(root, sum);
-}
+};
 
 // LINK: https://leetcode.com/problems/path-sum/

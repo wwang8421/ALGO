@@ -5,8 +5,7 @@ The LCA of any two nodes in a binary tree is the node furthest from the root tha
 Desing an algorithm for computing the LCA of two nodes in a binary tree in which nodes no not have a parent field
  */
 
-
- /* 
+/* 
  PSEUDO:
  if p and q are in diff subtrees, then the LCA is the parent root,
 
@@ -20,7 +19,6 @@ If the current node matches nodes a or b, we will return the current node.
 If the current node has node a in its left subtree and b in its right subtree or vice versa then the current node will be the lowest common ancestor.
 If the current node has nodes a and b exclusively in its left subtree or right subtree, then we will return the left or right subtree accordingly.
  */
-
 
 /**
  * Definition for a binary tree node.

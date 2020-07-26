@@ -3,5 +3,4 @@ You are given a binary tree where each node is labeled with an integer. The path
 Write a program which takes as input an integer and a binary tree with integer node weights, and checks if theer exists a leaf whose path weight equal the given integer.
 */
 
-
 // LINK: https://leetcode.com/problems/path-sum/

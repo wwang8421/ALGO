@@ -50,5 +50,4 @@ if we reach a level with no more nodes then return true;
  * @return {boolean}
  */
 
-
 //  LINK: https://leetcode.com/problems/symmetric-tree/

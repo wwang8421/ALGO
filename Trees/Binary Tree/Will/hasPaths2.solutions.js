@@ -28,15 +28,14 @@ if its a leaf node and curr.val === s then push curr arr to the result;
 when you are done traversing then return the result;
 */
 
-
-var pathSum = function(root, sum) {
+var pathSum = function (root, sum) {
   let results = [];
-  if(!root) return results;
+  if (!root) return results;
 
   const dfs = (curr, s, currArr = []) => {
-    if(!curr) return;
+    if (!curr) return;
 
-    if(curr.val === s && !curr.left && !curr.right){
+    if (curr.val === s && !curr.left && !curr.right) {
       currArr.push(curr.val);
       results.push(currArr);
       return;
@@ -44,11 +43,10 @@ var pathSum = function(root, sum) {
 
     dfs(curr.left, s - curr.val, [...currArr, curr.val]);
     dfs(curr.right, s - curr.val, [...currArr, curr.val]);
-  }
+  };
   dfs(root, sum);
 
   return results;
 };
-
 
 // Link:  https://leetcode.com/problems/path-sum-ii/
