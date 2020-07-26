@@ -3,3 +3,4 @@ isSymmetric
 lowest common ancestor
 sum root to leaf
 Compute the kth node in an inorder traversal
+compute successor
