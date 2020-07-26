@@ -39,5 +39,25 @@ The root-to-leaf path 4->9->1 represents the number 491.
 The root-to-leaf path 4->0 represents the number 40.
 Therefore, sum = 495 + 491 + 40 = 1026. */
 
+const sumRootToLeaf = (root) => {
+  let globalSum = 0;
+  if (!root) return globalSum;
+
+  const helper = (curr, currSum) => {
+    if (!curr) return 0;
+
+    currSum = currSum * 10 + curr.val;
+
+    if (!curr.left && !curr.right) {
+      globalSum += currSum;
+      return;
+    }
+
+    return helper(curr.left, currSum) + helper(curr.right, currSum);
+  };
+  helper(root, 0);
+
+  return globalSum;
+};
 
 // LINK: https://leetcode.com/problems/sum-root-to-leaf-numbers/

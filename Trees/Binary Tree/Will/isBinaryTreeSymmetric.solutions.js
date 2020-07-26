@@ -50,5 +50,19 @@ if we reach a level with no more nodes then return true;
  * @return {boolean}
  */
 
+const isSymmetric = (root) => {
+  if (!root) return true;
+
+  const helper = (left, right) => {
+    if (!left && !right) return true;
+
+    if (!left || !right || right.val !== left.val) return false;
+
+    return helper(left.left, right.right) && helper(left.right, right.left);
+  };
+
+  return helper(root.left, root.right);
+};
+//
 
 //  LINK: https://leetcode.com/problems/symmetric-tree/

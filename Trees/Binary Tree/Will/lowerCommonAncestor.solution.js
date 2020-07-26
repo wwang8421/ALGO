@@ -37,6 +37,35 @@ If the current node has nodes a and b exclusively in its left subtree or right s
  * @return {TreeNode}
  */
 
+var lowestCommonAncestor = function(root, p, q) {
+  if(!root) return null;
+
+  const helper = (curr, node1, node2) => {
+    if(!curr){
+      return null;
+    }
+
+    if(curr.val === node1.val || curr.val === node2.val){
+      return curr;
+    }
+
+    let left = helper(curr.left, node1, node2);
+    let right = helper(curr.right, node1, node2);
+
+    if(left !== null && right !== null){
+      return curr;
+    } else if(left !== null){
+      return left;
+    } else if(right !== null){
+      return right;
+    }
+
+    return null;
+  }
+  return helper(root, p, q);
+};
+
+
 // this is for binary search tree, the epi question is for any binary tree
 // LINK: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
 

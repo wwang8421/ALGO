@@ -13,5 +13,14 @@ path from the root node down to the farthest leaf node.
 //     maxDepth = 1 + max(left, right);
 //     */
 
+var maxDepth = function (root) {
+  if (!root) return 0;
+
+  let left = maxDepth(root.left);
+  let right = maxDepth(root.right);
+
+  return 1 + Math.max(left, right);
+};
+
 // LINK: https://leetcode.com/problems/maximum-depth-of-binary-tree/
 //

@@ -42,6 +42,22 @@ else we want to calculate the height of the left/right subtree
 BASE CASE: if they are more than 1 apart return false, else return true
 */
 
+const isBalanced = (root) => {
+  if (!root) return true;
+
+  const helper = (curr) => {
+    if (!curr) return 0;
+
+    let left = helper(curr.left);
+    let right = helper(curr.right);
+
+    if (left === -1 || right === -1 || Math.abs(left - right) > 1) return -1;
+
+    return 1 + Math.max(left, right);
+  };
+
+  return helper(root) !== -1;
+};
 
 // LINK: https://leetcode.com/problems/balanced-binary-tree/description/Given
 //
