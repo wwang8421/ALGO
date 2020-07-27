@@ -50,7 +50,7 @@ var lowestCommonAncestor = function (root, p, q) {
     let left = helper(curr.left, node1, node2);
     let right = helper(curr.right, node1, node2);
 
-    if (left !== null && right !== null) {
+    if (left !== null && right !== null) { 
       return curr;
     } else if (left !== null) {
       return left;
