@@ -28,6 +28,27 @@ if its a leaf node and curr.val === s then push curr arr to the result;
 when you are done traversing then return the result;
 */
 
+// var pathSum = function (root, sum) {
+//   let results = [];
+//   if (!root) return results;
+
+//   const dfs = (curr, s, currArr = []) => {
+//     if (!curr) return;
+
+//     if (curr.val === s && !curr.left && !curr.right) {
+//       currArr.push(curr.val);
+//       results.push(currArr);
+//       return;
+//     }
+
+//     dfs(curr.left, s - curr.val, [...currArr, curr.val]);
+//     dfs(curr.right, s - curr.val, [...currArr, curr.val]);
+//   };
+//   dfs(root, sum);
+
+//   return results;
+// };
+
 var pathSum = function (root, sum) {
   let results = [];
   if (!root) return results;
@@ -35,14 +56,15 @@ var pathSum = function (root, sum) {
   const dfs = (curr, s, currArr = []) => {
     if (!curr) return;
 
+    currArr.push(curr);
+
     if (curr.val === s && !curr.left && !curr.right) {
-      currArr.push(curr.val);
       results.push(currArr);
       return;
     }
 
-    dfs(curr.left, s - curr.val, [...currArr, curr.val]);
-    dfs(curr.right, s - curr.val, [...currArr, curr.val]);
+    dfs(curr.left, s - curr.val, [...currArr]);
+    dfs(curr.right, s - curr.val, [...currArr]);
   };
   dfs(root, sum);
 
