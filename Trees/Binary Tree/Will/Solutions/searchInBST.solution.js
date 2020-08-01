@@ -47,6 +47,6 @@ node.left.left = new TreeNode(1);
 node.left.right = new TreeNode(3);
 // node.right.right = new TreeNode(18);
 
-console.log(searchBST(node, 5));
+console.log(searchBST(node, 4));
 
 
