@@ -123,11 +123,11 @@ necessarily a binary search tree.
 //   return isSubtree(node1.left, node2) || isSubtree(node1.right, node2);
 // }
 
-function TreeNode(val, left, right) {
-  this.val = val === undefined ? 0 : val;
-  this.left = left === undefined ? null : left;
-  this.right = right === undefined ? null : right;
-}
+// function TreeNode(val, left, right) {
+//   this.val = val === undefined ? 0 : val;
+//   this.left = left === undefined ? null : left;
+//   this.right = right === undefined ? null : right;
+// }
 
 class BinaryTree {
   constructor(val) {
@@ -202,12 +202,6 @@ class BinaryTree {
 // console.log(node.find(12));
 
 // console.log(node);
-
-function TreeNode(val, left, right) {
-  this.val = val === undefined ? 0 : val;
-  this.left = left === undefined ? null : left;
-  this.right = right === undefined ? null : right;
-}
 
 const findAllNodes = (root, node, distance) => {
   let results = [];
@@ -297,7 +291,6 @@ const findAllNodes = (root, node, distance) => {
 //   return results;
 // };
 
-
 // let node = new TreeNode(6);
 // node.left = new TreeNode(7);
 // node.left.left = new TreeNode(2);
@@ -310,75 +303,112 @@ const findAllNodes = (root, node, distance) => {
 // node.right.right = new TreeNode(3);
 // node.right.right.right = new TreeNode(5);
 
-let node = new TreeNode(2);
-node.left = new TreeNode(1);
-node.right = new TreeNode(3);
-node.right.left = new TreeNode(4);
-node.right.right = new TreeNode(5);
+// let node = new TreeNode(2);
+// node.left = new TreeNode(1);
+// node.right = new TreeNode(3);
+// node.right.left = new TreeNode(4);
+// node.right.right = new TreeNode(5);
 
+// function diff_ways_to_evaluate_expression(input) {
+//   const result = [];
+//   // base case: if the input string is a number, parse and add it to output.
+//   if (!(input.includes('+')) && !(input.includes('-')) && !(input.includes('*'))) {
+//     result.push(parseInt(input));
+//   } else {
+//     for (let i = 0; i < input.length; i++) {
+//       const char = input[i];
+//       if (isNaN(parseInt(char, 10))) { // if not a digit
+//         // break the equation here into two parts and make recursively calls
+//         const leftParts = diff_ways_to_evaluate_expression(input.substring(0, i));
+//         const rightParts = diff_ways_to_evaluate_expression(input.substring(i + 1));
+//         // console.log('leftParts', leftParts, rightParts)
 
-// const helper = () => {
-//   for(const child in queue){
-
+//         for (let l = 0; l < leftParts.length; l++) {
+//           for (let r = 0; r < rightParts.length; r++) {
+//             let part1 = leftParts[l],
+//               part2 = rightParts[r];
+//             if (char === '+') {
+//               result.push(part1 + part2);
+//             } else if (char === '-') {
+//               result.push(part1 - part2);
+//             } else if (char === '*') {
+//               result.push(part1 * part2);
+//             }
+//           }
+//         }
+//       }
+//     }
 //   }
+
+//   return result;
 // }
 
-const print_orders = function(tasks, prerequisites) {
-  let results = [];
-  let inComing = Array(tasks).fill(0);
-  let graph = new Map();
-  let queue = [];
+// console.log(`Expression evaluations: ${diff_ways_to_evaluate_expression('1+2*3')}`);
+// console.log(`Expression evaluations: ${diff_ways_to_evaluate_expression('2*3-4-5')}`);
 
-  for(const [u, v] of prerequisites){
-    if(graph.has(u)){
-      graph.get(u).push(v);
-    } else {
-      graph.set(u, [v]);
-    }
-    inComing[v]++;
-  };
-
-  inComing.forEach((vertices, index) => vertices === 0 && queue.push(index));
-
-  const helper = (currQueue, currArr = []) => {
-    console.log('currArr', currArr);
-    if(currArr.length === tasks) {
-      results.push(currArr);
-      return;
-    }
-    if(currQueue.length){
-      for(let i = 0; i < currQueue.length; i++){
-        const curr = currQueue[i];
-
-        let newQueue = [...currQueue.slice(0,i), ...currQueue.slice(i+1)]
-
-        if(graph.has(curr)){
-          graph.get(curr).forEach(child => {
-            inComing[child]--;
-            if(inComing[child] === 0){
-              newQueue.push(child);
-            }
-          })
-        }
-
-        helper(newQueue, [...currArr, curr]);
-
-        if(graph.has(curr)){
-          graph.get(curr).forEach(child => inComing[child]++);
-        };
-
-      }
-    }
+class TreeNode {
+  constructor(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
-  helper(queue);
+}
 
-  return results;
-};
+// const find_unique_trees = function (n) {
+//   const result = [];
+
+//   const helper = (start, end) => {
+//     if(start > end) return [null];
+
+//     for (let i = start; i <= end; i++) {
+
+//       const left = helper(start, i - 1);
+//       const right = helper(i + 1, end);
+
+//       for(let leftArr of left){
+//         for(let rightArr of right){
+
+//           // let node = new TreeNode()
+//         }
+//       }
+
+//     }
+//   };
+//   helper(1, n);
+
+//   return result;
+// };
+
+// console.log(`Total trees: ${find_unique_trees(2)}`);
+// console.log(`Total trees: ${find_unique_trees(3)}`);
 
 
-// console.log("Task Orders: ", print_orders(3, [[0, 1], [1, 2]]))
 
-// console.log("Task Orders: ", print_orders(4, [[3, 2], [3, 0], [2, 0], [2, 1]]))
+// var generateTrees = function(n) {
+    
+//   if (n==0) return [];
+  
+//   const createTreeNode = (start, end) => {
+      
+//       if (start > end) return [undefined];
+//       const res = [];
+  
+//       for (let i = start; i <= end; i++) {
+          
+//           let leftTree = createTreeNode(start, i-1);
+//           let rightTree = createTreeNode(i+1, end);
 
-// console.log("Task Orders: ", print_orders(6, [[2, 5], [0, 5], [0, 4], [1, 4], [3, 2], [1, 3]]))
+//           for (const currleft of leftTree) {
+//               for (const currRight of rightTree) {
+//                   let rootNode = new TreeNode(i, currleft, currRight);
+//                   res.push(rootNode);
+//               } 
+//           }  
+//       }
+//       return res;
+//   } 
+  
+//   return createTreeNode(1, n);
+// };
 
+// console.log(generateTrees(3));
