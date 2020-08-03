@@ -4,8 +4,6 @@ of two nodes in a binary tree. Avoid storing additional nodes in a data structur
 necessarily a binary search tree. 
 */
 
-// on each level, we want to add the permutation of the particular level
-
 // const BSTSequences = (root) => {
 //   let results = [];
 //   let queue = [];
@@ -354,61 +352,51 @@ class TreeNode {
   }
 }
 
-// const find_unique_trees = function (n) {
-//   const result = [];
+// var getPermutation = function(n, k) {
+//   let results = [];
+//   let arr = Array(n).fill(0).map((x,index) => index + 1);
+//   // console.log(arr)
 
-//   const helper = (start, end) => {
-//     if(start > end) return [null];
-
-//     for (let i = start; i <= end; i++) {
-
-//       const left = helper(start, i - 1);
-//       const right = helper(i + 1, end);
-
-//       for(let leftArr of left){
-//         for(let rightArr of right){
-
-//           // let node = new TreeNode()
-//         }
+//   const helper = (num, curr = []) => {
+//       if(num.length === 0){
+//           results.push(curr);
+//           return;
 //       }
 
-//     }
-//   };
-//   helper(1, n);
-
-//   return result;
-// };
-
-// console.log(`Total trees: ${find_unique_trees(2)}`);
-// console.log(`Total trees: ${find_unique_trees(3)}`);
-
-
-
-// var generateTrees = function(n) {
-    
-//   if (n==0) return [];
-  
-//   const createTreeNode = (start, end) => {
-      
-//       if (start > end) return [undefined];
-//       const res = [];
-  
-//       for (let i = start; i <= end; i++) {
-          
-//           let leftTree = createTreeNode(start, i-1);
-//           let rightTree = createTreeNode(i+1, end);
-
-//           for (const currleft of leftTree) {
-//               for (const currRight of rightTree) {
-//                   let rootNode = new TreeNode(i, currleft, currRight);
-//                   res.push(rootNode);
-//               } 
-//           }  
+//       for(let i = 0; i < num.length; i++){
+//           if(results.length === k) return;
+//           helper([...num.slice(0,i), ...num.slice(i+1)], [...curr, num[i]]);
 //       }
-//       return res;
-//   } 
-  
-//   return createTreeNode(1, n);
+//   }
+//   helper(arr);
+//   console.log('results', results);
+//   return results[results.length - 1].join('');
 // };
 
-// console.log(generateTrees(3));
+// console.log(getPermutation(3, 3));
+
+const generate_generalized_abbreviation = function(word) {
+  const results = [];
+
+  const helper = (curr = '', index = 0, count = 0) => {
+    if(index === word.length){
+      if(count > 0){
+        curr += count;
+      }
+      results.push(curr);
+      return;
+    }
+
+    helper(curr, index + 1, count + 1);
+    helper(curr + (count > 0 ? count : '') + word[index], index + 1, 0);
+  }
+  helper();
+
+  return results;
+};
+
+
+console.log(`Generalized abbreviation are: ${generate_generalized_abbreviation("BAT")}`)
+console.log(`Generalized abbreviation are: ${generate_generalized_abbreviation("code")}`)
+
+
