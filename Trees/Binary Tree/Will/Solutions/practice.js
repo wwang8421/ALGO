@@ -1,402 +1,295 @@
-/* /* 
-Design an algorithm and write code to find the first common ancestor
-of two nodes in a binary tree. Avoid storing additional nodes in a data structure. NOTE: This is not
-necessarily a binary search tree. 
-*/
-
-// const BSTSequences = (root) => {
-//   let results = [];
-//   let queue = [];
-
-//   queue.push(root);
-
-//   const helper = (que, currArr = []) => {
-//     // while(que.length) {
-//     //   let currNode = que[0];
-//     //   currArr.push(currNode);
-//     //   let copyQueue = [];
-//     //   // let copyQueue = [...que];
-//     //   // copyQueue.shift();
-
-//     //   if(currNode.left) copyQueue.push(currNode.left.val);
-//     //   if(currNode.right) copyQueue.push(currNode.right.val);
-
-//     //   let levelLength = copyQueue.length;
-//     //   console.log(copyQueue);
-
-//     //   // loop thru curr queuelength; get all the permuations for it
-//     //   for(let i = 0; i < levelLength; i++){
-//     //     helper(copyQueue, [...currArr]);
-//     //   }
-//     // }
-//     results.push(currArr);
-//   }
-//   helper(queue);
-
-//   return results;
-// }
-
-// export function BSTsequences(node) {
-//   if (!node) return [];
-//   if (!node.left && !node.right) return [[node.val]];
-
-//   // In-Order Traversal to create sequence lists
-//   const left = BSTsequences(node.left);
-//   const right = BSTsequences(node.right);
-
-//   return weaveArrayPerms(node.val, left, right);
-// }
-
-// function weaveArrayPerms(nodeValue, leftSequence, rightSequence) {
-//   const permsResult = [];
-
-//   if (leftSequence[0] && rightSequence[0]) {
-//     for (const leftSeq of leftSequence) {
-//       for (const rightSeq of rightSequence) {
-//         const weaved = weave(leftSeq, rightSeq);
-//         // const weaved = weave([...leftSeq, ...rightSeq])
-//         // console.log('weaved', weaved);
-//         for (const perm of weaved) {
-//           permsResult.push([nodeValue, ...perm]);
-//         }
-//       }
-//     }
-//   }
-//   else {
-//     for (const perm of [...leftSequence, ...rightSequence]) {
-//       permsResult.push([nodeValue, ...perm]);
-//     }
-//   }
-
-//   return permsResult;
-// }
-
-// // find the permuation of the children
-// // function weave(combinedSeq, currArr = [], sequences = []) {
-// //   if(combinedSeq.length === 0){
-// //     sequences.push(currArr);
-// //     return;
-// //   }
-
-// //   for(let i = 0; i < combinedSeq.length; i++){
-// //     weave([...combinedSeq.slice(0, i), ...combinedSeq.slice(i + 1)], [...currArr, combinedSeq[i]], sequences);
-// //   }
-
-// //   return sequences;
-// // }
-
-// function weave(leftSeq, rightSeq, prefix = [], sequences = []) {
-//   if (leftSeq.length && rightSeq.length) {
-//     // console.log(leftSeq)
-//     // Shift leftSeq head to prefix. Weave, and put back to leftSeq.
-//     prefix.push(leftSeq.shift());
-//     weave(leftSeq, rightSeq, prefix, sequences);
-//     leftSeq.unshift(prefix.pop());
-
-//     // Shift rightSeq head to prefix. Weave, and put back to rightSeq.
-//     prefix.push(rightSeq.shift());
-//     weave(leftSeq, rightSeq, prefix, sequences);
-//     rightSeq.unshift(prefix.pop());
-//   }
-//   else {
-//     sequences.push([...prefix, ...leftSeq, ...rightSeq]);
-//   }
-//   // let combined = [...leftSeq, ...rightSeq]
-//   // console.log(sequences);
-//   return sequences;
-// }
-
-// const checkEqual = (node1, node2) => {
-//   if(!node2 || !node1) return !node1 && !node2;
-
-//   if(node1.val !== node2.val) return false;
-
-//   return checkEqual(node1.left, node2.left) && checkEqual(node1.right, node2.right);
-// }
-
-// const isSubtree = (node1, node2) => {
-//   if(!node1) return false;
-
-//   if(node1.val === node2.val && checkEqual(node1, node2)) return true;
-//   return isSubtree(node1.left, node2) || isSubtree(node1.right, node2);
-// }
-
-// function TreeNode(val, left, right) {
-//   this.val = val === undefined ? 0 : val;
-//   this.left = left === undefined ? null : left;
-//   this.right = right === undefined ? null : right;
-// }
-
-class BinaryTree {
-  constructor(val) {
-    this.root = new TreeNode(val) || null;
-    this.array = [];
+class Heap {
+  constructor(comparator, values) {
+    this.size = 0;
+    this.values = values || [];
+    this.comparator = comparator || Heap.minComparator;
   }
 
-  insert = (node) => {
-    let newNode = new TreeNode(node);
-    // console.log('newNode', newNode);
-    if (!this.root) {
-      this.root = newNode;
-      console.log("this.val", this.val);
-      // this.array.push(newNode.val);
-    } else {
-      this.insertNode(this.root, newNode);
-    }
-  };
+  add(val) {
+    this.values.push(val);
+    this.size++;
+    this.bubbleUp();
+  }
 
-  insertNode = (root, newNode) => {
-    // console.log('root', root);
-    if (newNode.val >= root.val) {
-      if (!root.right) {
-        root.right = newNode;
-        // this.array.push(newNode.val);
-      } else {
-        this.insertNode(root.right, newNode);
+  peek() {
+    return this.values[0] || null;
+  }
+
+  remove() {
+    const max = this.values[0];
+    const end = this.values.pop();
+    this.size--;
+    if (this.values.length) {
+      this.values[0] = end;
+      this.bubbleDown();
+    }
+    return max;
+  }
+
+  bubbleUp() {
+    let index = this.values.length - 1;
+    let parent = Math.floor((index - 1) / 2);
+
+    while (this.comparator(this.values[index], this.values[parent]) < 0) {
+      [this.values[parent], this.values[index]] = [
+        this.values[index],
+        this.values[parent],
+      ];
+      index = parent;
+      parent = Math.floor((index - 1) / 2);
+    }
+  }
+
+  bubbleDown() {
+    let index = 0,
+      length = this.values.length;
+
+    while (true) {
+      let left = null,
+        right = null,
+        swap = null,
+        leftIndex = index * 2 + 1,
+        rightIndex = index * 2 + 2;
+
+      if (leftIndex < length) {
+        left = this.values[leftIndex];
+        if (this.comparator(left, this.values[index]) < 0) swap = leftIndex;
       }
-    } else {
-      if (!root.left) {
-        root.left = newNode;
-        // this.array.push(newNode.val);
-      } else {
-        this.insertNode(root.left, newNode);
+
+      if (rightIndex < length) {
+        right = this.values[rightIndex];
+        if (
+          (swap !== null && this.comparator(right, left) < 0) ||
+          (swap === null && this.comparator(right, this.values[index]) < 0)
+        ) {
+          swap = rightIndex;
+        }
       }
+      if (swap === null) break;
+
+      [this.values[index], this.values[swap]] = [
+        this.values[swap],
+        this.values[index],
+      ];
+      index = swap;
     }
-  };
-
-  find = (node, root = this.root) => {
-    if (!root) return null;
-
-    if (node === root.val) return root;
-
-    if (root.val > node) {
-      return this.find(node, root.left);
-    } else {
-      return this.find(node, root.right);
-    }
-
-    // let left = this.find(node, root.left);
-    // if(left) return left;
-    // let right = this.find(node, root.right);
-    // if(right) return right;
-    // return null;
-  };
-
-  // delete = (root, node) => {
-
-  // }
-
-  getRandom = () => {
-    return this.array[Math.floor(Math.random() * this.array.length)];
-  };
+  }
 }
 
-// let node = new BinaryTree(10);
-// node.insert(4);
-// node.insert(3);
-// node.insert(5);
-// node.insert(11);
-// node.insert(12);
-// console.log(node.find(12));
-
-// console.log(node);
-
-const findAllNodes = (root, node, distance) => {
-  let results = [];
-  if (!root) return results;
-  let found = false;
-
-  const helper = (curr, count = 0) => {
-    if (!curr) return -1;
-
-    // if(node === curr.val) {
-    //   // found = true;
-    //   // return curr;
-    //   return 0;
-    // }
-
-    // let left = helper(curr.left, count);
-    // let right = helper(curr.right, count);
-
-    // if()
-  };
-  helper(root);
-
-  return results;
+const comparator = (b, a) => {
+  if (!a) return 1;
+  if (!b) return -1;
+  if (!a && !b) return 0;
+  return a[0] - b[0];
 };
 
-// let node = new TreeNode(20);
-// node.left = new TreeNode(8);
-// node.left.left = new TreeNode(4);
-// node.left.right = new TreeNode(12);
-// node.left.right.left = new TreeNode(10);
-// node.left.right.right = new TreeNode(14);
-// node.right = new TreeNode(22);
-// // node.right.right = new TreeNode(12);
+const mincomparator = (b, a) => {
+  if (!a) return 1;
+  if (!b) return -1;
+  if (!a && !b) return 0;
+  return b[0] - a[0];
+};
 
-// console.log(findAllNodes(node, 8, 2))
+// Min Comparator
+Heap.minComparator = (a, b) => {
+  return a - b;
+};
 
-// let node = new TreeNode(10);
-// node.left = new TreeNode(4);
-// node.left.left = new TreeNode(3);
-// node.left.right = new TreeNode(5);
-// node.right = new TreeNode(11);
-// node.right.right = new TreeNode(12);
+// Max Comparator
+Heap.maxComparator = (a, b) => {
+  return b - a;
+};
 
-// var sumEvenGrandparent = function (root) {
-//   if (!root) return 0;
-//   let results = 0;
+Heap.sortByTwo = (a, b) => {
+  if (!b) return 1;
+  if (!a) return -1;
+  if (!a && !b) return 0;
+  return a[0] - b[0] || a[1] - b[1];
+};
 
-//   let queue = [];
-//   queue.push({ root, grandparent: root.val, parent: root.val, depth: 1 });
-//   depth = 1
-
-//   while (queue.length) {
-//     let levelLength = queue.length;
-//     // console.log('queue', queue);
-//     for (let i = 0; i < levelLength; i++) {
-//       const curr = queue.shift();
-//       // console.log('depth', depth);
-//       // console.log('curr', curr.depth);
-
-//       if (depth <= 2) {
-//         if (curr.root.left)
-//           queue.push({ root: curr.root.left, grandparent: curr.parent, parent: curr.root.val });
-//         if (curr.root.right)
-//           queue.push({ root: curr.root.right, grandparent: curr.parent, parent: curr.root.val });
-//       } else {
-//         if (curr.grandparent % 2 === 0) {
-//           console.log('curr', curr.root.val);
-//           results += curr.root.val;
-//         }
-//         if (curr.root.left)
-//           queue.push({
-//             root: curr.root.left,
-//             grandparent: curr.parent,
-//             parent: curr.root.val,
-//           });
-//         if (curr.root.right)
-//           queue.push({
-//             root: curr.root.right,
-//             grandparent: curr.parent,
-//             parent: curr.root.val,
-//           });
-//       }
-//     }
-//     depth++;
+// let newBind = (context, ...args) => {
+//   let fn = this;
+//   return function(...secondArgs){
+//     return fn.call(context, ...args, ...secondArgs);
 //   }
-
-//   return results;
 // };
 
-// let node = new TreeNode(6);
-// node.left = new TreeNode(7);
-// node.left.left = new TreeNode(2);
-// node.left.left.left = new TreeNode(9);
-// node.left.right = new TreeNode(7);
-// node.left.right.left = new TreeNode(1);
-// node.left.right.right = new TreeNode(4);
-// node.right = new TreeNode(8);
-// node.right.left = new TreeNode(1);
-// node.right.right = new TreeNode(3);
-// node.right.right.right = new TreeNode(5);
+// function curry(func) {
+//   return function curried(...args) {
+//     if(args.length >= func.length){
+//       return func.apply(this,args);
+//     } else {
+//       return curried.bind(this, ...args);
+//     }
+//   }
+// }
 
-// let node = new TreeNode(2);
-// node.left = new TreeNode(1);
-// node.right = new TreeNode(3);
-// node.right.left = new TreeNode(4);
-// node.right.right = new TreeNode(5);
+// const join = (a, b, c) => {
+//   return `${a}_${b}_${c}`
+// }
 
-// function diff_ways_to_evaluate_expression(input) {
-//   const result = [];
-//   // base case: if the input string is a number, parse and add it to output.
-//   if (!(input.includes('+')) && !(input.includes('-')) && !(input.includes('*'))) {
-//     result.push(parseInt(input));
-//   } else {
-//     for (let i = 0; i < input.length; i++) {
-//       const char = input[i];
-//       if (isNaN(parseInt(char, 10))) { // if not a digit
-//         // break the equation here into two parts and make recursively calls
-//         const leftParts = diff_ways_to_evaluate_expression(input.substring(0, i));
-//         const rightParts = diff_ways_to_evaluate_expression(input.substring(i + 1));
-//         // console.log('leftParts', leftParts, rightParts)
+// const curriedJoin = curry(join)
 
-//         for (let l = 0; l < leftParts.length; l++) {
-//           for (let r = 0; r < rightParts.length; r++) {
-//             let part1 = leftParts[l],
-//               part2 = rightParts[r];
-//             if (char === '+') {
-//               result.push(part1 + part2);
-//             } else if (char === '-') {
-//               result.push(part1 - part2);
-//             } else if (char === '*') {
-//               result.push(part1 * part2);
-//             }
-//           }
-//         }
+// curriedJoin(1, 2, 3) // '1_2_3'
+
+// curriedJoin(1)(2, 3) // '1_2_3'
+
+// curriedJoin(1, 2)(3) // '1_2_3';
+
+// Given an api which returns an array of chemical names and an array of chemical symbols, display the chemical names with their symbol surrounded by square brackets:
+
+// Ex:
+// Chemicals array: ['Amazon', 'Microsoft', 'Google']
+// Symbols: ['I', 'Am', 'cro', 'Na', 'le', 'abc']
+
+// Output:
+// [Am]azon, Mi[cro]soft, Goog[le]
+
+// const chemicals = (chemicalsArray, symbols) => {
+//   const results = [];
+
+//   for(let chem of chemicalsArray){
+//     for(let i = 0; i < symbols.length; i++){
+//       let string = "";
+//       const index = chem.indexOf(symbols[i]);
+//       console.log('index', index);
+
+//       if(index !== -1){
+//         chem = chem.replace(symbols[i], `[${symbols[i]}]`)
+//         console.log('chem', chem)
+//         // results.push()
 //       }
+//     }
+//   }
+
+//   console.log(chemicalsArray);
+// }
+
+// chemicals(chemicalsArray, symbols);
+
+// const elements = [{symbol: "H", name: "Hydrogen" },
+//   {symbol: "He", name: "Helium" },
+//   {symbol: "Li", name: "Lithium" },
+//   {symbol: " Br", name: "Bromine" },
+//   {symbol: "B", name: "Boron"}
+// ];
+
+// const elementSet = new Set(elements.map((item) => item.symbol));
+
+// const process = ( str) => {
+//   let currentSymbol = "";
+//   let result = "";
+
+//   for (const char of str) {
+//     const symbol = currentSymbol + char;
+//     if (elementSet.has(symbol)) {
+//       currentSymbol = symbol;
+//     } else {
+//       result += currentSymbol.length? `[${currentSymbol}]` + char:char;
+//       currentSymbol = "";
 //     }
 //   }
 
 //   return result;
-// }
-
-// console.log(`Expression evaluations: ${diff_ways_to_evaluate_expression('1+2*3')}`);
-// console.log(`Expression evaluations: ${diff_ways_to_evaluate_expression('2*3-4-5')}`);
-
-class TreeNode {
-  constructor(val, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
-
-// var getPermutation = function(n, k) {
-//   let results = [];
-//   let arr = Array(n).fill(0).map((x,index) => index + 1);
-//   // console.log(arr)
-
-//   const helper = (num, curr = []) => {
-//       if(num.length === 0){
-//           results.push(curr);
-//           return;
-//       }
-
-//       for(let i = 0; i < num.length; i++){
-//           if(results.length === k) return;
-//           helper([...num.slice(0,i), ...num.slice(i+1)], [...curr, num[i]]);
-//       }
-//   }
-//   helper(arr);
-//   console.log('results', results);
-//   return results[results.length - 1].join('');
 // };
 
-// console.log(getPermutation(3, 3));
+// console.log(process("Breaking Bad"));
 
-const generate_generalized_abbreviation = function(word) {
-  const results = [];
+// There are various goods and prices in the store, such as
+// 1 pencil, 1.5 dollars for ice cream, 5 dollars for beef, and 10 dollars for wine. Given a certain amount of money, ask what combination of products you can buy. Just output the first matching option.
 
-  const helper = (curr = '', index = 0, count = 0) => {
-    if(index === word.length){
-      if(count > 0){
-        curr += count;
-      }
-      results.push(curr);
-      return;
-    }
+// In the current company for a year and four months, fullstack,
+// mainly doing front-end, so hr matched the front-end position. I asked if I was not prepared, and the response I got was a general interview. But at the beginning, the phone was stunned. It was completely javascript html css and used jsfiddle. Give you the api, draw a table and change the colors in different cells according to the returned data from the api. The task itself is not particularly difficult, but it is almost impossible to complete it without preparation. In view of the fact that the host jsfiddle has never used it, there are many js and html default settings that are not known, and many frameworks must be referenced. I have been in the company for a long time, and it has been a long time since I wrote html and the simplest js from scratch. . The key is not prepared. After an hour, I barely drew the form (all kinds of debug eggs hurt, because I am not familiar with this jsfiddle), the color is hard code first. I thought I died. . Then I sent an email to hr Xiaoxiao and complained. . Two weeks later, I didn't expect to give me a second chance. I hope to have good luck next week.
 
-    helper(curr, index + 1, count + 1);
-    helper(curr + (count > 0 ? count : '') + word[index], index + 1, 0);
-  }
-  helper();
+// Question: For the list of list, the sub-list represents an employee and has three elements, namely the employee id, his boss id, and the name. [[1, 1, 张三], [2, 1, 李四]].. .....]
+// Let the print come out the following (it should be available in many companies’ internal search tools. People with the same indent report to one person, such as Liu Wu and Wang Qi. The report relationship cannot be wrong. The order does not matter. Cui but Liu five eight can not report to Choi in John Doe top eight, report to their own people is the big boss instead of id 1):
+// Joe Smith
+//     John Doe
+//         Liu five
+//             Zhao Si
+//             Zhao six
+//                 Zheng nine
+//         king seven
+//     Cui eight
 
-  return results;
-};
+// actually approach is The preorder of the tree does not matter the order except for the root node.
 
+// 1. The input is a series of two-tuples, indicating who invited whom in a party, such as [[A, B], [B, C], [C, D], [A, E]] for A Invited B, B invited C, C invited D, A invited E, and then gave any two people, such as D and E, to find out what kind of invitation relationship is between them. The above example should output: D is invited by C, C is invited by B, B is invited by A, A invites E. If you query E and D, you should output E is invited by A, A invites B, B invites C, C invites D.
 
-console.log(`Generalized abbreviation are: ${generate_generalized_abbreviation("BAT")}`)
-console.log(`Generalized abbreviation are: ${generate_generalized_abbreviation("code")}`)
+// After the interview, the topic is to give a string of numbers, such as 1 2 3 4 2 1 3 5, and ask for the longest subsequence, where one number is removed from this sequence, and the other numbers appear the same number of times. The answer to the example is 7, because after subsequence 1 2 3 4 2 1 3 is removed, the other numbers appear twice. This question is not very good at first, but after thinking about it carefully, I use two hashmaps, one to store how many times each number appears, and one to store how many numbers appear N times, but there are some corner cases that need to be dealt with, such as 3 3 3 It is also legal, because after removing one 3, the other numbers (3 3) only appear twice. At first, the eldest brother didn’t speak. When I talked about ideas, he stayed silent. I didn’t know if lz was right.
+// Later, I just wrote it. After the interview, I found out that this eldest brother didn’t mean to embarrass lz. He just had this personality. .
+// add two string with decimals
 
+// Given a set, return all subsets of length n. For example, given [1,2,3,4,5], n=2, then return [1,2], [2,3], [3,4] and other non-repeated subsets of size 2
+
+// Example 1: str1 = "123.52" and str2 = "11.2", output should be "134.72"
+
+// const addStrings = (str1, str2) => {
+//   if(!str1.length && !str2.length) return "";
+//   if(!str1.length || !str2.length) return str1 || str2;
+
+//   let results = "";
+
+//   let newString1 = str1;
+//   let newString2 = str2;
+//   let i = newString1.length - 1;
+//   let j = newString2.length - 1;
+
+//   const decimalIndexStr1 = newString1.indexOf('.');
+//   const decimalIndexStr2 = newString2.indexOf('.');
+
+//   if(decimalIndexStr1 !== -1 && decimalIndexStr2 !== -1){
+//     let str1DecimalPlaces = str1.length - 1 - decimalIndexStr1;
+//     let str2DecimalPlaces = str2.length - 1 - decimalIndexStr2;
+
+//     if(str1DecimalPlaces > str2DecimalPlaces) {
+//       let numberFill = str1DecimalPlaces - str2DecimalPlaces;
+//       while(numberFill > 0){
+//         newString2 += '0';
+//         numberFill--;
+//       };
+//       j = newString2.length - 1;
+//     } else if(str2DecimalPlaces > str1DecimalPlaces){
+//       let numberFill = str2DecimalPlaces - str1DecimalPlaces;
+//       while(numberFill > 0){
+//         newString1 += '0';
+//         numberFill--;
+//       };
+//       i = newString1.length - 1;
+//     }
+//   } else if(decimalIndexStr2 !== -1){
+//     results += newString2.slice(decimalIndexStr2);
+//     j = decimalIndexStr2 - 1;
+//   } else if(decimalIndexStr1 !== -1){
+//     results += newString1.slice(decimalIndexStr1);
+//     i = decimalIndexStr1 - 1;
+//   };
+
+//   while(i >= 0 || j >= 0){
+//     if(newString1[i] === '.'){
+//       results = '.' + results;
+//       i--;
+//       j--;
+//       continue;
+//     };
+
+//     let first = i < 0 ? 0 : newString1[i] - '0';
+//     let second = j < 0 ? 0 : newString2[j] - '0';
+//     let carry = 0;
+
+//     let sum = first + second + carry;
+//     if(sum < 10){
+//       results = sum + results;
+//       carry = 0;
+//     } else {
+//       results = (sum - 10) + results;
+//       carry++;
+//     };
+
+//     i--;
+//     j--;
+//   }
+
+//   return results;
+// };
 

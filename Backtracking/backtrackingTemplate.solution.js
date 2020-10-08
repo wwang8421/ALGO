@@ -64,15 +64,12 @@ var permuteUnique = function (nums) {
       return;
     }
 
-    const set = new Set();
-
     for (let i = 0; i < remaining.length; i++) {
-      if (set.has(remaining[i])) continue;
+      if (i > 0 && remaining[i] === remaining[i - 1]) continue;
       helper(
         [...remaining.slice(0, i), ...remaining.slice(i + 1)],
         [...curr, remaining[i]]
       );
-      set.add(remaining[i]);
     }
   };
   helper(nums);
@@ -140,6 +137,39 @@ var combinationSum3 = function (k, n) {
   return results;
 };
 
+// 377. Combination Sum IV(Medium) memo
+var combinationSum4 = function(nums, target, memo={}) {
+  if (target ==0) return 1; 
+  if (typeof memo[target] != "undefined") return memo[target];
+   let ret = 0;
+    
+    for (let i = 0; i<nums.length; i++) {
+        if (target >= nums[i])
+            ret += combinationSum4(nums, target - nums[i], memo);
+    }
+    memo[target] = ret;
+    return ret;
+};
+
+var combinationSum4 = function(nums, target) {
+  let memo = new Map();
+  
+  const dfs = (currSum) => {
+      if(memo.has(currSum)) return memo.get(currSum);
+      if(currSum > target) return 0;
+      if(currSum === target) return 1;
+      let ways = 0;
+      
+      for(let i = 0; i < nums.length; i++){
+          ways += dfs(currSum + nums[i]);
+      };
+      
+      memo.set(currSum, ways);
+      return ways;
+  }
+  return dfs(0);
+};
+
 // 77. Combinations (Medium)
 var combine = function (n, k) {
   const results = [];
@@ -155,5 +185,39 @@ var combine = function (n, k) {
     }
   };
   helper();
+  return results;
+};
+
+// Palindrome Partitioning
+
+const isPalindrome = (str) => {
+  let left = 0;
+  let right = str.length - 1;
+  while (right > left) {
+    if (str[left] !== str[right]) return false;
+    left++;
+    right--;
+  }
+  return true;
+};
+
+var partition = function (s) {
+  let results = [];
+
+  const helper = (remaining, curr = []) => {
+    if (remaining.length === 0) {
+      results.push(curr);
+      return;
+    }
+
+    for (let i = 1; i <= remaining.length; i++) {
+      const temp = remaining.slice(0, i);
+      if (isPalindrome(temp)) {
+        helper(remaining.slice(i), [...curr, temp]);
+      }
+    }
+  };
+  helper(s);
+
   return results;
 };
